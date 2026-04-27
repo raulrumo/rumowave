@@ -133,7 +133,7 @@ if (-not $isAdmin) {
     Write-Warn "NSSM not found in PATH - skipping service registration."
     Write-Warn "Install NSSM: winget install NSSM.NSSM  (then re-run this script)"
 } else {
-    $python  = (Get-Command python).Source
+    $python  = python -c "import sys; print(sys.executable)"
     $logDir  = "$Root\logs"
     New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 
