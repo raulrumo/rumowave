@@ -124,7 +124,35 @@ if ($chosenPort) {
 }
 
 # =============================================================================
-# STEP 5 - NSSM service registration (optional, skip if not admin or no NSSM)
+# STEP 5 - Windows Firewall rule for UDP 9000
+# =============================================================================
+Write-Step "Configuring Windows Firewall"
+
+$ruleName = "RumoWave UDP 9000"
+$existingRule = Get-NetFirewallRule -DisplayName $ruleName -ErrorAction SilentlyContinue
+if ($existingRule) {
+    Write-OK "Firewall rule already exists: '$ruleName'"
+} else {
+    try {
+        New-NetFirewallRule `
+            -DisplayName    $ruleName `
+            -Direction      Inbound `
+            -Protocol       UDP `
+            -LocalPort      9000 `
+            -Action         Allow `
+            -Profile        Domain,Private,Public `
+            -EdgeTraversalPolicy Allow `
+            -ErrorAction    Stop | Out-Null
+        Write-OK "Firewall rule created: '$ruleName' (UDP 9000 inbound, all profiles)"
+    } catch {
+        Write-Warn "Could not create firewall rule: $_"
+        Write-Warn "Run as Administrator, or add the rule manually:"
+        Write-Warn "  New-NetFirewallRule -DisplayName '$ruleName' -Direction Inbound -Protocol UDP -LocalPort 9000 -Action Allow"
+    }
+}
+
+# =============================================================================
+# STEP 7 - NSSM service registration (optional, skip if not admin or no NSSM)
 # =============================================================================
 Write-Step "Setting up Windows service (NSSM)"
 
@@ -173,7 +201,7 @@ if (-not $isAdmin) {
 }
 
 # =============================================================================
-# STEP 6 - Print summary
+# STEP 8 - Print summary
 # =============================================================================
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Cyan

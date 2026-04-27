@@ -2,9 +2,9 @@
 # Run install.ps1 to auto-configure, or edit manually following the comments.
 
 server:
-  host: "0.0.0.0"       # listen on all network interfaces
-  port: 9000             # UDP port - must match the OSC app on your phone
-  recv_buffer_bytes: 4194304  # 4 MB kernel receive buffer
+  host: "0.0.0.0" # listen on all network interfaces
+  port: 9000 # UDP port - must match the OSC app on your phone
+  recv_buffer_bytes: 4194304 # 4 MB kernel receive buffer
 
 midi:
   # Substring of the MIDI output port name to use.
@@ -41,11 +41,11 @@ security:
   #                     iPhone  -> Settings -> Wi-Fi -> tap (i) next to network
   # Use ["0.0.0.0"] to allow any IP (not recommended outside of testing).
   allowed_ips:
-    - "127.0.0.1"
-    # - "192.168.1.100"   # your phone's IP - uncomment and replace
+    - "127.0.0.1"         # loopback (osc_client_sim.py)
+    # - "192.168.1.XX"    # your phone's IP — uncomment and fill in
 
 logging:
-  level: "INFO"          # DEBUG | INFO | WARNING | ERROR
+  level: "INFO" # DEBUG | INFO | WARNING | ERROR
   file: "logs/gateway.log"
-  max_bytes: 10485760    # rotate at 10 MB
+  max_bytes: 10485760 # rotate at 10 MB
   backup_count: 5
