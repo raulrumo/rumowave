@@ -1,8 +1,7 @@
 # =============================================================================
-# MIDI-OSC Gateway — One-shot installer for Windows 10/11
+# MIDI-OSC Gateway - One-shot installer for Windows 10/11
 # Run from an Administrator PowerShell:
-#   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-#   .\install.ps1
+#   powershell -ExecutionPolicy Bypass -File install.ps1
 # =============================================================================
 
 param(
@@ -27,7 +26,7 @@ if ($Uninstall) {
         nssm remove  $ServiceName confirm
         Write-OK "Service removed."
     } else {
-        Write-Warn "NSSM not found — nothing to remove."
+        Write-Warn "NSSM not found - nothing to remove."
     }
     exit 0
 }
@@ -91,10 +90,12 @@ if ($LASTEXITCODE -ne 0) {
     Write-OK "Found ports: $($ports -join ', ')"
 }
 
-# Pick best port: prefer loopMIDI, then any non-GS port, then GS Wavetable
-$gsKeywords = @("gs", "wavetable", "sintetizador", "microsoft", "sw synth")
-$preferred  = $ports | Where-Object { $_ -notmatch ($gsKeywords -join "|") } | Select-Object -First 1
-$fallback   = $ports | Select-Object -First 1
+# Pick best port: prefer loopMIDI explicitly, then any non-GS port, then GS Wavetable
+$gsKeywords   = @("gs", "wavetable", "sintetizador", "microsoft", "sw synth")
+$loopMidi     = $ports | Where-Object { $_ -match "loopmidi" } | Select-Object -First 1
+$nonGs        = $ports | Where-Object { $_ -notmatch ($gsKeywords -join "|") } | Select-Object -First 1
+$preferred    = if ($loopMidi) { $loopMidi } else { $nonGs }
+$fallback     = $ports | Select-Object -First 1
 
 if ($preferred) {
     $chosenPort = $preferred
@@ -126,10 +127,10 @@ $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIden
 )
 
 if (-not $isAdmin) {
-    Write-Warn "Not running as Administrator — skipping service registration."
+    Write-Warn "Not running as Administrator - skipping service registration."
     Write-Warn "Re-run as Administrator to install the Windows service."
 } elseif (-not (Get-Command nssm -ErrorAction SilentlyContinue)) {
-    Write-Warn "NSSM not found in PATH — skipping service registration."
+    Write-Warn "NSSM not found in PATH - skipping service registration."
     Write-Warn "Install NSSM: winget install NSSM.NSSM  (then re-run this script)"
 } else {
     $python  = (Get-Command python).Source

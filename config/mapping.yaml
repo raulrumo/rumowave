@@ -10,6 +10,20 @@
 #                  omit to pass the first OSC argument as-is
 
 mappings:
+  # TouchOSC / OSC Controller default addresses
+  - osc_pattern: "/control/1"
+    type: cc
+    channel: 1
+    number: 7
+    value_scale: [0.0, 1.0, 0, 127]
+
+  - osc_pattern: "/control/*"
+    type: cc
+    channel: 1
+    number: 20
+    value_scale: [0.0, 1.0, 0, 127]
+
+
   - osc_pattern: "/fader/1"
     type: cc
     channel: 1

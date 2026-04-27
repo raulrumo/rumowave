@@ -1,33 +1,51 @@
-# High-Performance Secure MIDI-OSC Gateway — Configuration
-# All values here are examples. Change before deploying.
+# MIDI-OSC Gateway — Configuration
+# Run install.ps1 to auto-configure, or edit manually following the comments.
 
 server:
-  host: "0.0.0.0"
-  port: 9000
-  recv_buffer_bytes: 4194304 # 4 MB SO_RCVBUF
+  host: "0.0.0.0"       # listen on all network interfaces
+  port: 9000             # UDP port — must match the OSC app on your phone
+  recv_buffer_bytes: 4194304  # 4 MB kernel receive buffer
 
 midi:
-  # Backend: "wms" (Windows MIDI Services, preferred) or "rtmidi"
-  backend: "wms"
-  # Device name substring to match (leave empty to use first available port)
-  device_name: "loopMIDI Port"
+  # Substring of the MIDI output port name to use.
+  # Leave empty to auto-select: prefers loopMIDI or any non-GS port,
+  # falls back to Microsoft GS Wavetable Synth (built into Windows).
+  # Run install.ps1 to detect and fill this automatically.
+  device_name: ""
 
 security:
-  # HMAC-SHA256 secret key — CHANGE THIS to a long random string in production.
-  # Generate one with: python -c "import secrets; print(secrets.token_hex(32))"
+  # --- How to choose ---
+  #
+  # require_hmac: false  <- USE THIS for TouchOSC, OSC Controller, or any
+  #                         standard OSC app on your phone. The IP allowlist
+  #                         below is still enforced — only your listed devices
+  #                         can send messages. Sufficient for home/studio use.
+  #
+  # require_hmac: true   <- USE THIS only if your OSC client is custom code
+  #                         that implements HMAC signing (e.g. osc_client_sim.py).
+  #                         Standard OSC apps do NOT support this — they will
+  #                         be rejected even with the correct IP.
+  #
+  require_hmac: false
+
+  # HMAC-SHA256 secret — only active when require_hmac is true.
+  # Generate: python -c "import secrets; print(secrets.token_hex(32))"
   hmac_secret: "CHANGE_ME_run_install.ps1_to_generate"
 
-  # Maximum age of a packet timestamp before it is rejected (milliseconds).
+  # Reject packets older than this (milliseconds). Prevents replay attacks.
   replay_window_ms: 5000
 
-  # Allowlisted sender IPs. Packets from any other IP are dropped before HMAC.
-  # Use ["0.0.0.0"] to disable IP filtering (not recommended in production).
+  # Allowlist: only these IPs can send messages to the gateway.
+  # Add your phone's IP here — this is your primary security boundary.
+  # Find your phone IP: Android -> Settings -> Wi-Fi -> tap network -> IP address
+  #                     iPhone  -> Settings -> Wi-Fi -> tap (i) next to network
+  # Use ["0.0.0.0"] to allow any IP (not recommended outside of testing).
   allowed_ips:
     - "127.0.0.1"
-    - "192.168.1.100"
+    # - "192.168.1.100"   # your phone's IP — uncomment and replace
 
 logging:
-  level: "INFO" # DEBUG | INFO | WARNING | ERROR
+  level: "INFO"          # DEBUG | INFO | WARNING | ERROR
   file: "logs/gateway.log"
-  max_bytes: 10485760 # 10 MB per log file
+  max_bytes: 10485760    # rotate at 10 MB
   backup_count: 5
