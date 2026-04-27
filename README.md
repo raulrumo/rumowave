@@ -183,7 +183,30 @@ Install the [obs-midi-mg](https://github.com/nhielost/obs-midi-mg) plugin:
 
 ## OSC address mapping
 
-Edit `config/mapping.yaml` — no code changes needed.
+RumoWave only forwards OSC addresses that have a rule in `config/mapping.yaml`.
+If your app sends an address that is not listed there, it will be silently ignored.
+Adding new controls requires editing that file — no Python changes needed, just YAML.
+
+### How to add a new control
+
+**Step 1 — Find the OSC address your app sends.** Enable DEBUG logging in
+`config/settings.yaml`, move the control, and look for a line like:
+```
+DEBUG  No mapping rule for OSC address: /1/fader1
+```
+
+**Step 2 — Add a rule to `config/mapping.yaml`:**
+```yaml
+- osc_pattern: "/1/fader1"
+  type: cc
+  channel: 1
+  number: 10              # any CC number 0-127
+  value_scale: [0.0, 1.0, 0, 127]
+```
+
+**Step 3 — Restart RumoWave** (or `nssm restart RumoWave` if running as a service).
+
+### Default rules included
 
 ```yaml
 - osc_pattern: "/fader/1"
@@ -206,13 +229,6 @@ Edit `config/mapping.yaml` — no code changes needed.
 ```
 
 **Supported types:** `cc`, `note_on`, `note_off`, `pitchbend`, `program`
-
-**Finding your app's OSC addresses:** enable DEBUG logging, move a control, and
-look for lines like:
-```
-DEBUG  No mapping rule for OSC address: /1/fader1
-```
-Then add that address to `mapping.yaml`.
 
 ---
 
