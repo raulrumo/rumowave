@@ -67,7 +67,7 @@ def plot(df: pd.DataFrame, csv_path: Path, show: bool = False) -> Path | None:
         gridspec_kw={"height_ratios": [2, 1]},
     )
     fig.suptitle(
-        "MIDI-OSC Gateway — Latency Stability Report",
+        "RumoWave — Latency Stability Report",
         fontsize=15, fontweight="bold", y=0.98,
     )
     fig.patch.set_facecolor("#0f1117")
@@ -167,7 +167,7 @@ def plot(df: pd.DataFrame, csv_path: Path, show: bool = False) -> Path | None:
     # ---- footer ------------------------------------------------------------
     fig.text(
         0.5, 0.01,
-        "MIDI-OSC Gateway  |  Python 3.11+ + Windows MIDI Services  |  github.com/raulrumo/midi-osc-gateway",
+        "RumoWave  |  Python 3.11+ + Windows MIDI Services  |  github.com/raulrumo/midi-osc-gateway",
         ha="center", fontsize=8, color="#606880",
     )
 
@@ -187,7 +187,7 @@ def plot(df: pd.DataFrame, csv_path: Path, show: bool = False) -> Path | None:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="MIDI-OSC Gateway latency analyzer")
+    parser = argparse.ArgumentParser(description="RumoWave latency analyzer")
     parser.add_argument("--csv",  type=Path, default=None, help="Path to a specific CSV file")
     parser.add_argument("--show", action="store_true",     help="Show interactive window")
     args = parser.parse_args()

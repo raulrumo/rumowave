@@ -85,7 +85,7 @@ def send_signed_osc(
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="MIDI-OSC Gateway client simulator")
+    parser = argparse.ArgumentParser(description="RumoWave client simulator")
     parser.add_argument("--address", default="/fader/1", help="OSC address to send")
     parser.add_argument("--value",   type=float, default=0.5, help="Fader value (0.0–1.0)")
     parser.add_argument("--count",   type=int,   default=1,   help="Number of messages")

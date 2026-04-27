@@ -1,4 +1,4 @@
-param([string]$ServiceName = "MidiOscGateway")
+param([string]$ServiceName = "RumoWave")
 
 $Root = Split-Path $PSScriptRoot
 

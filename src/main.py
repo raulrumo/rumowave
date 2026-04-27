@@ -88,7 +88,7 @@ def main() -> None:
     cfg = yaml.safe_load(_CONFIG_PATH.read_text(encoding="utf-8"))
     _configure_logging(cfg)
 
-    logger.info("=== High-Performance Secure MIDI-OSC Gateway starting ===")
+    logger.info("=== RumoWave starting ===")
 
     # Shared primitives
     packet_queue: queue.Queue = queue.Queue(maxsize=1024)
@@ -140,7 +140,7 @@ def main() -> None:
     # Flush remaining telemetry before exit.
     telemetry.stop()
 
-    logger.info("=== Gateway stopped cleanly ===")
+    logger.info("=== RumoWave stopped cleanly ===")
 
 
 if __name__ == "__main__":

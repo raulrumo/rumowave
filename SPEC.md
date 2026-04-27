@@ -1,4 +1,4 @@
-# High-Performance Secure MIDI-OSC Gateway — Architecture Specification
+# RumoWave — Architecture Specification
 
 ## Overview
 

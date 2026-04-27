@@ -1,4 +1,4 @@
-# High-Performance Secure MIDI-OSC Gateway — Dependencies
+# RumoWave — Dependencies
 #
 # All packages below install cleanly on Python 3.14.3 / Windows 11.
 #

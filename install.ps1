@@ -1,11 +1,11 @@
 # =============================================================================
-# MIDI-OSC Gateway - One-shot installer for Windows 10/11
+# RumoWave - One-shot installer for Windows 10/11
 # Run from an Administrator PowerShell:
 #   powershell -ExecutionPolicy Bypass -File install.ps1
 # =============================================================================
 
 param(
-    [string]$ServiceName = "MidiOscGateway",
+    [string]$ServiceName = "RumoWave",
     [switch]$Uninstall
 )
 
@@ -146,8 +146,8 @@ if (-not $isAdmin) {
 
     nssm install     $ServiceName $python "-m src.main"
     nssm set         $ServiceName AppDirectory  $Root
-    nssm set         $ServiceName DisplayName   "MIDI-OSC Gateway"
-    nssm set         $ServiceName Description   "High-Performance Secure MIDI-OSC Gateway (Python + WinRT)"
+    nssm set         $ServiceName DisplayName   "RumoWave"
+    nssm set         $ServiceName Description   "RumoWave - Phone-to-MIDI wireless gateway (Python + WinRT)"
     nssm set         $ServiceName Start         SERVICE_AUTO_START
     nssm set         $ServiceName AppStdout     "$logDir\service_stdout.log"
     nssm set         $ServiceName AppStderr     "$logDir\service_stderr.log"

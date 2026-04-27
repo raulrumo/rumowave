@@ -1,4 +1,4 @@
-# MIDI-OSC Gateway
+# RumoWave
 
 Low-latency bridge that turns any phone or tablet into a general-purpose MIDI
 controller over Wi-Fi. Receives OSC messages over UDP and forwards them as MIDI
@@ -9,7 +9,7 @@ speaks MIDI. Built with Python 3.11+ and Windows MIDI Services (WinRT).
 **Measured latency: ~207 µs average, ~143 µs minimum (Wi-Fi, local network).**
 
 ```
-[Phone / tablet]  --Wi-Fi/UDP-->  [Gateway]  --MIDI-->  [Any MIDI-capable app]
+[Phone / tablet]  --Wi-Fi/UDP-->  [RumoWave]  --MIDI-->  [Any MIDI-capable app]
                                       |
                                  HMAC-SHA256 auth
                                  IP allowlist
@@ -28,7 +28,7 @@ your phone, with sub-millisecond latency.
 ## What it does
 
 You move a fader on your phone. A MIDI Control Change message arrives in your
-target application in under a millisecond. The gateway handles authentication,
+target application in under a millisecond. RumoWave handles authentication,
 translation, and telemetry — no plugins, no drivers, no latency-inducing
 middleware.
 
@@ -47,7 +47,7 @@ with no code changes.
 **Optional but recommended: [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)**
 (free, by Tobias Erichsen)
 
-loopMIDI creates a virtual MIDI cable in Windows. Without it the gateway uses
+loopMIDI creates a virtual MIDI cable in Windows. Without it RumoWave uses
 the built-in Microsoft GS Wavetable Synth — you will hear sound but cannot route
 MIDI to a DAW. With loopMIDI, any app (FL Studio, Ableton, OBS, VMPK...) can
 receive the MIDI from your phone.
@@ -62,7 +62,7 @@ git clone https://github.com/raulrumo/midi-osc-gateway.git
 cd midi-osc-gateway
 pip install -r requirements.txt
 
-# 2 — Start the gateway (Terminal 1)
+# 2 — Start RumoWave (Terminal 1)
 python -m src.main
 
 # 3 — Send test messages (Terminal 2)
@@ -92,7 +92,7 @@ It will look like `192.168.1.XX`. Write it down.
 > Your phone and PC must be on the **same Wi-Fi network**. If your phone shows
 > an IP starting with a completely different range (e.g. PC is `192.168.1.x`
 > and phone is `10.x.x.x`), they are on different networks and packets will not
-> reach the gateway. Connect both to the same router.
+> reach RumoWave. Connect both to the same router.
 
 ### Step 2 — Find your phone's IP address
 
@@ -101,7 +101,7 @@ It will look like `192.168.1.XX`. Write it down.
 
 It will look like `192.168.1.YY`.
 
-### Step 3 — Add your phone's IP to the gateway
+### Step 3 — Add your phone's IP to RumoWave
 
 Edit `config/settings.yaml`:
 
@@ -119,11 +119,11 @@ In your OSC app settings (TouchOSC, OSC Controller, etc.):
 
 ```
 Remote IP:    192.168.1.XX   ← your PC's IP from Step 1
-Remote Port:  9000            ← must match gateway port
-Local Port:   any             ← the gateway does not send responses
+Remote Port:  9000            ← must match RumoWave port
+Local Port:   any             ← RumoWave does not send responses
 ```
 
-### Step 5 — Start the gateway and move a fader
+### Step 5 — Start RumoWave and move a fader
 
 ```powershell
 python -m src.main
@@ -150,7 +150,7 @@ exact IP in `allowed_ips`.
 1. Download and install [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
 2. Open loopMIDI → click **+** → a new port named "loopMIDI Port" appears
 3. Edit `config/settings.yaml` → set `device_name: "loopMIDI Port"`
-4. Restart the gateway
+4. Restart RumoWave
 
 ### FL Studio
 
@@ -186,7 +186,7 @@ Edit `config/mapping.yaml` — no code changes needed.
   type: cc
   channel: 1
   number: 7                         # CC #7 = Volume (MIDI standard)
-  value_scale: [0.0, 1.0, 0, 127]  # rescales 0.0–1.0 float to 0–127 int
+  value_scale: [0.0, 1.0, 0, 127]  # rescales 0.0-1.0 float to 0-127 int
 
 - osc_pattern: "/control/*"         # wildcard: /control/1, /control/2 ...
   type: cc
@@ -218,7 +218,7 @@ Two modes, controlled by `security.require_hmac` in settings.yaml:
 
 | Mode | require_hmac | Compatible with |
 |---|---|---|
-| Full (default) | `true` | `osc_client_sim.py`, custom apps with signing |
+| Full | `true` | `osc_client_sim.py`, custom apps with signing |
 | Plain OSC | `false` | TouchOSC, OSC Controller, any standard OSC app |
 
 In both modes the **IP allowlist** is always enforced.
@@ -240,7 +240,7 @@ Then run the one-shot installer as Administrator:
 powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
-The gateway will start automatically on boot, restart on crash, and write logs
+RumoWave will start automatically on boot, restart on crash, and write logs
 to `logs/service_stdout.log`. Monitor in real time:
 ```powershell
 Get-Content logs\service_stdout.log -Wait -Tail 20
@@ -253,10 +253,10 @@ Verify everything works:
 
 Service management:
 ```powershell
-nssm start   MidiOscGateway
-nssm stop    MidiOscGateway
-nssm restart MidiOscGateway   # after editing settings.yaml
-nssm status  MidiOscGateway
+nssm start   RumoWave
+nssm stop    RumoWave
+nssm restart RumoWave   # after editing settings.yaml
+nssm status  RumoWave
 ```
 
 ---
