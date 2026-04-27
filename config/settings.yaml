@@ -1,0 +1,33 @@
+# High-Performance Secure MIDI-OSC Gateway — Configuration
+# All values here are examples. Change before deploying.
+
+server:
+  host: "0.0.0.0"
+  port: 9000
+  recv_buffer_bytes: 4194304 # 4 MB SO_RCVBUF
+
+midi:
+  # Backend: "wms" (Windows MIDI Services, preferred) or "rtmidi"
+  backend: "wms"
+  # Device name substring to match (leave empty to use first available port)
+  device_name: "loopMIDI Port"
+
+security:
+  # HMAC-SHA256 secret key — CHANGE THIS to a long random string in production.
+  # Generate one with: python -c "import secrets; print(secrets.token_hex(32))"
+  hmac_secret: "CHANGE_ME_run_install.ps1_to_generate"
+
+  # Maximum age of a packet timestamp before it is rejected (milliseconds).
+  replay_window_ms: 5000
+
+  # Allowlisted sender IPs. Packets from any other IP are dropped before HMAC.
+  # Use ["0.0.0.0"] to disable IP filtering (not recommended in production).
+  allowed_ips:
+    - "127.0.0.1"
+    - "192.168.1.100"
+
+logging:
+  level: "INFO" # DEBUG | INFO | WARNING | ERROR
+  file: "logs/gateway.log"
+  max_bytes: 10485760 # 10 MB per log file
+  backup_count: 5

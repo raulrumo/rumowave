@@ -1,0 +1,18 @@
+# High-Performance Secure MIDI-OSC Gateway — Dependencies
+#
+# All packages below install cleanly on Python 3.14.3 / Windows 11.
+#
+# python-rtmidi has NO pre-built wheel for Python 3.14; use the WinRT path
+# instead (winrt-Windows.Devices.Midi + winrt-runtime, already installed).
+
+python-osc==1.10.2
+mido==1.3.3
+pyyaml>=6.0.2
+
+# Windows MIDI Services — WinRT binding (no C++ compiler required)
+winrt-runtime==3.2.1
+winrt-Windows.Devices.Midi==3.2.1
+
+# Optional: compile from source only if you need non-WinRT MIDI backend
+# Requires VS 2022 Build Tools (C++) + `pip install meson ninja` first:
+# python-rtmidi==1.5.8

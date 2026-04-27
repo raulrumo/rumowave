@@ -1,0 +1,50 @@
+# OSC → MIDI mapping rules
+# Each entry maps an OSC address pattern to a MIDI command.
+#
+# Fields:
+#   osc_pattern  – exact OSC address or prefix ending in /*
+#   type         – "cc" | "note_on" | "note_off" | "pitchbend" | "program"
+#   channel      – MIDI channel 1-16
+#   number       – CC controller number or MIDI note (ignored for pitchbend/program)
+#   value_scale  – [osc_min, osc_max, midi_min, midi_max]  (linear rescale)
+#                  omit to pass the first OSC argument as-is
+
+mappings:
+  - osc_pattern: "/fader/1"
+    type: cc
+    channel: 1
+    number: 7        # Volume
+    value_scale: [0.0, 1.0, 0, 127]
+
+  - osc_pattern: "/fader/2"
+    type: cc
+    channel: 1
+    number: 8        # Balance
+    value_scale: [0.0, 1.0, 0, 127]
+
+  - osc_pattern: "/fader/*"
+    type: cc
+    channel: 1
+    number: 20       # Generic CC for any /fader/N not matched above
+    value_scale: [0.0, 1.0, 0, 127]
+
+  - osc_pattern: "/pad/*/hit"
+    type: note_on
+    channel: 10      # Drum channel
+    number: 36       # Bass drum default; override per pad via wildcard index
+    value_scale: [0.0, 1.0, 0, 127]
+
+  - osc_pattern: "/pad/*/release"
+    type: note_off
+    channel: 10
+    number: 36
+    value_scale: [0.0, 1.0, 0, 0]   # velocity 0 on release
+
+  - osc_pattern: "/pitch"
+    type: pitchbend
+    channel: 1
+    value_scale: [-1.0, 1.0, -8192, 8191]
+
+  - osc_pattern: "/program"
+    type: program
+    channel: 1
