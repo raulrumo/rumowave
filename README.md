@@ -54,29 +54,60 @@ receive the MIDI from your phone.
 
 ---
 
-## Quick start — test in 3 steps without a phone
+## Installation
 
-> **Recommended:** run `install.ps1` as Administrator — it installs dependencies,
-> detects your MIDI port, generates the HMAC secret, and registers the Windows
-> service automatically. The manual steps below are for testing without the service.
+### Option A — Windows service (recommended for regular use)
+
+Installs dependencies, detects your MIDI port, generates the HMAC secret, and
+registers RumoWave as a Windows service that starts automatically on boot.
+
+Requirements: [NSSM](https://nssm.cc) (`winget install NSSM.NSSM`) and [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html).
 
 ```powershell
-# 1 — Clone and install
+git clone https://github.com/raulrumo/rumowave.git
+cd rumowave
+# Run as Administrator:
+powershell -ExecutionPolicy Bypass -File install.ps1
+```
+
+Monitor logs in real time:
+```powershell
+Get-Content logs\service_stdout.log -Wait -Tail 20
+```
+
+Service management:
+```powershell
+nssm start   RumoWave
+nssm stop    RumoWave
+nssm restart RumoWave   # after editing settings.yaml
+nssm status  RumoWave
+```
+
+### Option B — Manual mode (for testing, no service needed)
+
+Works without NSSM. Two terminals required. If the service is running, stop it
+first (`nssm stop RumoWave`) — both cannot share port 9000.
+
+```powershell
 git clone https://github.com/raulrumo/rumowave.git
 cd rumowave
 pip install -r requirements.txt
+```
 
-# 2 — Start RumoWave (Terminal 1)
+**Terminal 1 — start RumoWave:**
+```powershell
 python -m src.main
+```
 
-# 3 — Send test messages (Terminal 2)
+**Terminal 2 — send test messages:**
+```powershell
 python tests/osc_client_sim.py --count 10 --delay 0.2
 ```
 
 Expected output in Terminal 1:
 ```
 [udp-receiver] INFO  UDP receiver listening on 0.0.0.0:9000
-[midi-writer]  INFO  MIDI output -> Microsoft GS Wavetable Synth
+[midi-writer]  INFO  MIDI output -> loopMIDI Port
 [stats]        INFO  received=10 rejected=0 dropped=0 | latency(µs) min=142 avg=207 max=890 [n=10]
 ```
 
@@ -129,9 +160,9 @@ Local Port:   any             ← RumoWave does not send responses
 
 ### Step 5 — Start RumoWave and move a fader
 
-```powershell
-python -m src.main
-```
+**Service mode:** `nssm start RumoWave` (already running if installed with install.ps1)
+
+**Manual mode:** `python -m src.main` in a terminal
 
 You should immediately see `received=1 rejected=0` in the logs when you move
 a control in the app. If you see `rejected=1`, the phone's IP in `allowed_ips`
@@ -248,35 +279,10 @@ verification using `hmac.compare_digest` (timing-safe — immune to timing attac
 
 ---
 
-## Run as a Windows service (NSSM)
+## Verify the service
 
-Install [NSSM](https://nssm.cc):
-```powershell
-winget install NSSM.NSSM
-```
-
-Then run the one-shot installer as Administrator:
-```powershell
-powershell -ExecutionPolicy Bypass -File install.ps1
-```
-
-RumoWave will start automatically on boot, restart on crash, and write logs
-to `logs/service_stdout.log`. Monitor in real time:
-```powershell
-Get-Content logs\service_stdout.log -Wait -Tail 20
-```
-
-Verify everything works:
 ```powershell
 .\tests\verify_nssm.bat
-```
-
-Service management:
-```powershell
-nssm start   RumoWave
-nssm stop    RumoWave
-nssm restart RumoWave   # after editing settings.yaml
-nssm status  RumoWave
 ```
 
 ---
