@@ -149,7 +149,7 @@ latency than RtMidi by bypassing the legacy WinMM stack entirely.
 ## Directory Layout
 
 ```
-midi-osc-gateway/
+rumowave/
 ├── config/
 │   └── settings.yaml          # All runtime configuration
 ├── docs/

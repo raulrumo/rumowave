@@ -167,7 +167,7 @@ def plot(df: pd.DataFrame, csv_path: Path, show: bool = False) -> Path | None:
     # ---- footer ------------------------------------------------------------
     fig.text(
         0.5, 0.01,
-        "RumoWave  |  Python 3.11+ + Windows MIDI Services  |  github.com/raulrumo/midi-osc-gateway",
+        "RumoWave  |  Python 3.11+ + Windows MIDI Services  |  github.com/raulrumo/rumowave",
         ha="center", fontsize=8, color="#606880",
     )
 

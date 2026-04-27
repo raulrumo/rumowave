@@ -58,8 +58,8 @@ receive the MIDI from your phone.
 
 ```powershell
 # 1 — Clone and install
-git clone https://github.com/raulrumo/midi-osc-gateway.git
-cd midi-osc-gateway
+git clone https://github.com/raulrumo/rumowave.git
+cd rumowave
 pip install -r requirements.txt
 
 # 2 — Start RumoWave (Terminal 1)
@@ -275,7 +275,7 @@ python src/analyzer.py            # saves PNG to logs/
 ## Project structure
 
 ```
-midi-osc-gateway/
+rumowave/
 ├── config/
 │   ├── settings.yaml        # server, MIDI port, security, logging
 │   └── mapping.yaml         # OSC address -> MIDI translation rules

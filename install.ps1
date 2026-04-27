@@ -138,8 +138,12 @@ if (-not $isAdmin) {
     New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 
     # Remove existing service if present
-    $existing = nssm status $ServiceName 2>$null
-    if ($existing) {
+    try {
+        $existing = nssm status $ServiceName 2>$null
+    } catch {
+        $existing = $null
+    }
+    if ($existing -and $existing -notmatch "Can't open") {
         nssm stop   $ServiceName 2>$null
         nssm remove $ServiceName confirm 2>$null
     }
