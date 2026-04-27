@@ -144,8 +144,8 @@ if (-not $isAdmin) {
         $existing = $null
     }
     if ($existing -and $existing -notmatch "Can't open") {
-        nssm stop   $ServiceName 2>$null
-        nssm remove $ServiceName confirm 2>$null
+        try { nssm stop   $ServiceName 2>$null } catch {}
+        try { nssm remove $ServiceName confirm 2>$null } catch {}
     }
 
     nssm install     $ServiceName $python "-m src.main"
