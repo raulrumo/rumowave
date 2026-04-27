@@ -56,6 +56,10 @@ receive the MIDI from your phone.
 
 ## Quick start — test in 3 steps without a phone
 
+> **Recommended:** run `install.ps1` as Administrator — it installs dependencies,
+> detects your MIDI port, generates the HMAC secret, and registers the Windows
+> service automatically. The manual steps below are for testing without the service.
+
 ```powershell
 # 1 — Clone and install
 git clone https://github.com/raulrumo/rumowave.git
